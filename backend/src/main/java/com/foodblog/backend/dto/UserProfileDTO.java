@@ -17,6 +17,5 @@ public class UserProfileDTO {
     private String profilePicture;
     private List<UserSummaryDTO> followers;
     private List<UserSummaryDTO> following;
-
    
 }
