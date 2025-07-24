@@ -63,6 +63,7 @@ public class UserServiceImpl implements UserService {
         if (existingUser == null) {
             return null;
         }
+        existingUser.setEmail(user.getEmail());
         existingUser.setUsername(user.getUsername());
         existingUser.setName(user.getName());
         existingUser.setBio(user.getBio());
