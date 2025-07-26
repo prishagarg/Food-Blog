@@ -42,11 +42,11 @@ public class UserServiceImpl implements UserService {
         }
         
         List<UserSummaryDTO> followersDTO = user.getFollowers().stream()
-                .map(follower -> new UserSummaryDTO(follower.getId(), follower.getUsername(), follower.getName()))
+                .map(follower -> new UserSummaryDTO(follower.getId(), follower.getUsername(), follower.getName(), follower.getProfilePicture()))
                 .collect(Collectors.toList());
         
         List<UserSummaryDTO> followingDTO = user.getFollowing().stream()
-                .map(following -> new UserSummaryDTO(following.getId(), following.getUsername(), following.getName()))
+                .map(following -> new UserSummaryDTO(following.getId(), following.getUsername(), following.getName(), following.getProfilePicture()))
                 .collect(Collectors.toList());
 
         return new UserProfileDTO(user.getId(), user.getUsername(), user.getName(), user.getBio(), user.getProfilePicture(), followersDTO, followingDTO);
@@ -83,10 +83,10 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         List<UserSummaryDTO> followersDTO = user.getFollowers().stream()
-                .map(follower -> new UserSummaryDTO(follower.getId(), follower.getUsername(), follower.getName()))
+                .map(follower -> new UserSummaryDTO(follower.getId(), follower.getUsername(), follower.getName(), follower.getProfilePicture()))
                 .collect(Collectors.toList());
         List<UserSummaryDTO> followingDTO = user.getFollowing().stream()
-                .map(following -> new UserSummaryDTO(following.getId(), following.getUsername(), following.getName()))
+                .map(following -> new UserSummaryDTO(following.getId(), following.getUsername(), following.getName(), following.getProfilePicture()))
                 .collect(Collectors.toList());
         return new UserProfileDTO(user.getId(), user.getUsername(), user.getName(), user.getBio(), user.getProfilePicture(), followersDTO, followingDTO);
     }
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userId);
         if(user==null) return null;
         return user.getFollowers().stream()
-                .map(follower -> new UserSummaryDTO(follower.getId(), follower.getUsername(), follower.getName()))
+                .map(follower -> new UserSummaryDTO(follower.getId(), follower.getUsername(), follower.getName(), follower.getProfilePicture()))
                 .collect(Collectors.toList());
     }
 
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(userId);
         if(user==null) return null;
         return user.getFollowing().stream()
-                    .map(following -> new UserSummaryDTO(following.getId(), following.getUsername(), following.getName()))
+                    .map(following -> new UserSummaryDTO(following.getId(), following.getUsername(), following.getName(), following.getProfilePicture()))
                     .collect(Collectors.toList());
     }
 
@@ -140,4 +140,11 @@ public class UserServiceImpl implements UserService {
         return follower.getFollowing().contains(following);
     }
 
-}
+    @Override
+    public List<UserSummaryDTO> searchUsersByUsername(String keyword) {
+        List<User> users = userRepository.findByNameContainingIgnoreCase(keyword);
+        return users.stream()
+                .map(user -> new UserSummaryDTO(user.getId(), user.getUsername(), user.getName(), user.getProfilePicture()))
+                .collect(Collectors.toList());
+    }
+} 

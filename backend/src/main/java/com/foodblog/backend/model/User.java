@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +27,7 @@ public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true, nullable = false)
     private String username;
     private String email;
     private String password;
@@ -46,6 +48,15 @@ public class User{
     private Set<User> following = new HashSet<>();
     @ManyToMany(mappedBy="following")
     private Set<User> followers = new HashSet<>();
+
+
+    @ManyToMany
+    @JoinTable(
+        name = "user_liked_recipes",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "recipe_id")
+    )
+    private Set<Recipe> likedRecipes = new HashSet<>();
 
     public Long getId() {
         return id;

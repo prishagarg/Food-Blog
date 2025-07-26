@@ -15,6 +15,7 @@ public interface UserService{
     User updateUser(Long id, User user);
     void deleteUser(Long id);
     UserProfileDTO getUserProfileByUsername(String username);
+    List<UserSummaryDTO> searchUsersByUsername(String keyword);
     void followUser(Long followerId, Long followingId);
     void unfollowUser(Long followerId, Long followingId);
     List<UserSummaryDTO> getFollowers(Long userId);
