@@ -1,12 +1,10 @@
 package com.foodblog.backend.model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;   
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -17,7 +15,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,8 +49,13 @@ public class Recipe {
     @JoinColumn(name = "user_id", nullable = false)
     private User createdBy;
 
-    @OneToMany(mappedBy="recipe", cascade=CascadeType.ALL, orphanRemoval=true)
-    private List<Ingredient> ingredients = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+        name = "recipe_ingredients",
+        joinColumns=@JoinColumn(name="recipe_id"),
+        inverseJoinColumns=@JoinColumn(name="ingredient_id")
+    )
+    private Set<Ingredient> ingredients = new HashSet<>();
     
     @ManyToMany
     @JoinTable(
