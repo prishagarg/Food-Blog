@@ -52,7 +52,7 @@ public class IngredientServiceImpl implements IngredientService{
 
     @Override
     public List<Recipe> getRecipesByIngredientName(String name){
-        return recipeRepository.findByIngredients_NameIgnoreCase(name);
+        return recipeRepository.findByAnyIngredientMatch(List.of(name));
     }
 
     @Override

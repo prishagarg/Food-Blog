@@ -33,4 +33,9 @@ public class Ingredient {
 
     @ManyToMany(mappedBy = "ingredients")
     private Set<Recipe> recipes = new HashSet<>();
+
+    public Ingredient(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
