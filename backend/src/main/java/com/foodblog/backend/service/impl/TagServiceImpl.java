@@ -52,9 +52,7 @@ public class TagServiceImpl implements TagService {
 
     @Override 
     public void deleteTag(Long id){
-        if(!tagRepository.existsById(id)){
-            throw new RuntimeException("Tag not found with ID: " + id);
-        }
+        Tag tag = tagRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tag not found with id: " + id));
         tagRepository.deleteById(id);
     }
 
