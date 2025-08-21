@@ -1,29 +1,39 @@
 package com.foodblog.backend.repository;
-
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.foodblog.backend.model.Recipe;
+import com.foodblog.backend.model.Tag;
+import com.foodblog.backend.model.User;
 
+@Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
-    List<Recipe> findByTags_NameIgnoreCase(String name);
-    List<Recipe> findByTitleContainingIgnoreCase(String title);
-    @Query("SELECT DISTINCT r FROM Recipe r JOIN r.ingredients i WHERE i.name IN :ingredientNames")
-    List<Recipe> findByAnyIngredientMatch(@Param("ingredientNames") List<String> ingredientNames);
-    @Query("""
-        SELECT r 
-        FROM Recipe r 
-        JOIN r.ingredients i 
-        WHERE i.name IN :ingredientNames 
-        GROUP BY r.id 
-        HAVING COUNT(DISTINCT i.name) = :ingredientCount
-    """)
-    List<Recipe> findByAllIngredientMatch(
-        @Param("ingredientNames") List<String> ingredientNames,
-        @Param("ingredientCount") long ingredientCount
-    );
+    
+    // Find user's recipes
+    Page<Recipe> findByCreatedBy(User createdBy);
+    
+    // Search recipes by title
+    Page<Recipe> findByTitleContainingIgnoreCase(String title);
+    
+    // Get recent recipes (paginated)
+    Page<Recipe> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    
+    // Find by cuisine (paginated)
+    Page<Recipe> findByCuisine(String cuisine, Pageable pageable);
+    
+    // Find by tag (paginated)
+    Page<Recipe> findByTagsContaining(Tag tag, Pageable pageable);
 
+    // Find recipes liked by a user (for user's liked recipes page)
+    Page<Recipe> findByLikedByContaining(User user);
+
+    // Find recipes saved by a user (for user's saved recipes page) 
+    Page<Recipe> findBySavedByContaining(User user);
+
+    @Query("SELECT DISTINCT r FROM Recipe r JOIN r.recipeIngredients ri WHERE ri.ingredient.name ILIKE %:ingredientName%")
+    Page<Recipe> findByIngredientNameContainingIgnoreCase(@Param("ingredientName") String ingredientName, Pageable pageable);
 }

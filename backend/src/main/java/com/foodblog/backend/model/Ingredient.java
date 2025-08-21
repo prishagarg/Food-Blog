@@ -2,13 +2,12 @@ package com.foodblog.backend.model;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,23 +18,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Ingredient {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
+    
+    @Column(unique = true, nullable = false)
     private String name;
-
-    @Column(nullable = false)
-    private String quantity;
-
-    @Column(nullable = false)
-    private String unit;
-
-    @ManyToMany(mappedBy = "ingredients")
-    private Set<Recipe> recipes = new HashSet<>();
-
-    public Ingredient(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    
+    // Bidirectional relationship (optional)
+    @OneToMany(mappedBy = "ingredient")
+    private Set<RecipeIngredient> recipeIngredients = new HashSet<>();
 }

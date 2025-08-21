@@ -1,7 +1,5 @@
 package com.foodblog.backend.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +13,9 @@ public class UserProfileDTO {
     private String name;
     private String bio;
     private String profilePicture;
-    private List<UserSummaryDTO> followers;
-    private List<UserSummaryDTO> following;
+    private int followerCount;
+    private int followingCount;
+    private int recipeCount;
+    private boolean isFollowing; 
    
 }

@@ -12,4 +12,5 @@ import com.foodblog.backend.model.Tag;
 public interface TagRepository extends JpaRepository<Tag, Long> {
     Optional<Tag> findByName(String name);
     List<Tag> findByNameContainingIgnoreCase(String name);
+    boolean existsByName(String name);
 }

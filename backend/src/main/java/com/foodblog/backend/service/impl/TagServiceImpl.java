@@ -5,8 +5,6 @@ import com.foodblog.backend.model.Tag;
 import com.foodblog.backend.repository.TagRepository;
 import com.foodblog.backend.repository.RecipeRepository;
 import com.foodblog.backend.service.TagService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -71,5 +69,10 @@ public class TagServiceImpl implements TagService {
         String normalized = name.trim().toLowerCase();
         return tagRepository.findByName(normalized)
                 .orElseGet(() -> tagRepository.save(new Tag(null, normalized)));
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return tagRepository.existsByName(name);
     }
 }

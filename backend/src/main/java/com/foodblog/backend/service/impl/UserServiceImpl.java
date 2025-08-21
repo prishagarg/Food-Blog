@@ -49,12 +49,12 @@ public class UserServiceImpl implements UserService {
                 .map(following -> new UserSummaryDTO(following.getId(), following.getUsername(), following.getName(), following.getProfilePicture()))
                 .collect(Collectors.toList());
 
-        return new UserProfileDTO(user.getId(), user.getUsername(), user.getName(), user.getBio(), user.getProfilePicture(), followersDTO, followingDTO);
+        return new UserProfileDTO(user.getId(), user.getUsername(), user.getName(), user.getBio(), user.getProfilePicture(), followersDTO.size(), followingDTO.size(), 0, false);
     }
 
     @Override
     public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userRepository.findByUsername(username).orElse(null);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
         List<UserSummaryDTO> followingDTO = user.getFollowing().stream()
                 .map(following -> new UserSummaryDTO(following.getId(), following.getUsername(), following.getName(), following.getProfilePicture()))
                 .collect(Collectors.toList());
-        return new UserProfileDTO(user.getId(), user.getUsername(), user.getName(), user.getBio(), user.getProfilePicture(), followersDTO, followingDTO);
+        return new UserProfileDTO(user.getId(), user.getUsername(), user.getName(), user.getBio(), user.getProfilePicture(), followersDTO.size(), followingDTO.size(), 0, false);
     }
 
     @Override
@@ -137,6 +137,9 @@ public class UserServiceImpl implements UserService {
     public boolean isFollowing(Long followerId, Long followingId) {
         User follower = getUserById(followerId);
         User following = getUserById(followingId);
+        if(follower == null || following == null){
+            return false;
+        }
         return follower.getFollowing().contains(following);
     }
 
