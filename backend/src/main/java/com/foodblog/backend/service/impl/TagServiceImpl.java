@@ -1,78 +1,92 @@
 package com.foodblog.backend.service.impl;
 
-import com.foodblog.backend.model.Recipe;
-import com.foodblog.backend.model.Tag;
-import com.foodblog.backend.repository.TagRepository;
-import com.foodblog.backend.repository.RecipeRepository;
-import com.foodblog.backend.service.TagService;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.foodblog.backend.model.Tag;
+import com.foodblog.backend.repository.TagRepository;
+import com.foodblog.backend.service.TagService;
+
 @Service
-@RequiredArgsConstructor
+@Transactional
 public class TagServiceImpl implements TagService {
-    private final TagRepository tagRepository;
-    private final RecipeRepository recipeRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     @Override
     public Tag createTag(Tag tag) {
-        tag.setName(tag.getName().trim().toLowerCase());
-        Optional<Tag> existingTag = tagRepository.findByName(tag.getName());
-        if (existingTag.isPresent()) {
-            return existingTag.get();
+        // Normalize the tag name before saving
+        if (tag.getName() != null) {
+            tag.setName(tag.getName().toLowerCase().trim());
         }
         return tagRepository.save(tag);
     }
 
     @Override
-    public List<Tag> getAllTags(){
+    @Transactional(readOnly = true)
+    public List<Tag> getAllTags() {
         return tagRepository.findAll();
     }
 
     @Override
-    public Tag getTagById(Long id) {
-        return tagRepository.findById(id).orElse(null);
+    @Transactional(readOnly = true)
+    public Optional<Tag> getTagById(Long id) {
+        return tagRepository.findById(id);
     }
 
     @Override
     public Tag updateTag(Long id, Tag tag) {
-        Tag existingTag = tagRepository.findById(id).orElse(null);
-        if (existingTag != null) {
-            existingTag.setName(tag.getName().trim().toLowerCase());
-            return tagRepository.save(existingTag);
-        }
-        return null;
+        return tagRepository.findById(id)
+            .map(existingTag -> {
+                if (tag.getName() != null) {
+                    existingTag.setName(tag.getName()); // Entity will normalize via @PreUpdate
+                }
+                return tagRepository.save(existingTag);
+            })
+            .orElseThrow(() -> new RuntimeException("Tag not found with id: " + id));
     }
 
-    @Override 
-    public void deleteTag(Long id){
-        Tag tag = tagRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Tag not found with id: " + id));
+    @Override
+    public void deleteTag(Long id) {
+        if (!tagRepository.existsById(id)) {
+            throw new RuntimeException("Tag not found with id: " + id);
+        }
         tagRepository.deleteById(id);
     }
 
     @Override
-    public List<Tag> searchTagsByName(String name){
-        return tagRepository.findByNameContainingIgnoreCase(name.trim());
+    @Transactional(readOnly = true)
+    public List<Tag> searchTagsByName(String name) {
+        String normalizedName = name.toLowerCase().trim();
+        return tagRepository.findByNameContainingIgnoreCase(normalizedName);
     }
 
-    @Override
-    public List<Recipe> getRecipesByTagName(String name){
-        return recipeRepository.findByTags_NameIgnoreCase(name.trim().toLowerCase());
-    }
 
     @Override
     public Tag findOrCreateByNormalizedName(String name) {
-        String normalized = name.trim().toLowerCase();
-        return tagRepository.findByName(normalized)
-                .orElseGet(() -> tagRepository.save(new Tag(null, normalized)));
+        String normalizedName = name.toLowerCase().trim();
+        Optional<Tag> existingTag = tagRepository.findByName(normalizedName);
+        
+        if (existingTag.isPresent()) {
+            return existingTag.get();
+        } else {
+            Tag newTag = new Tag();
+            newTag.setName(normalizedName);
+            return tagRepository.save(newTag);
+        }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean existsByName(String name) {
-        return tagRepository.existsByName(name);
+        String normalizedName = name.toLowerCase().trim();
+        return tagRepository.existsByName(normalizedName);
     }
+
+    
 }
