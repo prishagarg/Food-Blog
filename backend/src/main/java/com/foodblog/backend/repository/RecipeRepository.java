@@ -17,7 +17,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     Page<Recipe> findByCreatedBy(User createdBy);
     
     // Search recipes by title
-    Page<Recipe> findByTitleContainingIgnoreCase(String title);
+    Page<Recipe> findByTitleContainingIgnoreCase(String title, Pageable pageable);
     
     // Get recent recipes (paginated)
     Page<Recipe> findAllByOrderByCreatedAtDesc(Pageable pageable);
@@ -34,6 +34,10 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     // Find recipes saved by a user (for user's saved recipes page) 
     Page<Recipe> findBySavedByContaining(User user);
 
-    @Query("SELECT DISTINCT r FROM Recipe r JOIN r.recipeIngredients ri WHERE ri.ingredient.name ILIKE %:ingredientName%")
+    @Query("SELECT DISTINCT r FROM Recipe r " +
+       "JOIN r.recipeIngredients ri " +
+       "WHERE LOWER(ri.ingredient.name) LIKE LOWER(CONCAT('%', :ingredientName, '%'))")
     Page<Recipe> findByIngredientNameContainingIgnoreCase(@Param("ingredientName") String ingredientName, Pageable pageable);
+
+
 }

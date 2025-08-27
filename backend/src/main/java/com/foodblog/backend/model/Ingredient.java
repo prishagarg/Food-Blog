@@ -2,6 +2,9 @@ package com.foodblog.backend.model;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +27,20 @@ public class Ingredient {
     @Column(unique = true, nullable = false)
     private String name;
     
-    // Bidirectional relationship (optional)
     @OneToMany(mappedBy = "ingredient")
+    @JsonIgnore
     private Set<RecipeIngredient> recipeIngredients = new HashSet<>();
+
+    public void addRecipeIngredient(RecipeIngredient recipeIngredient) {
+        if (recipeIngredient == null) return;
+        this.recipeIngredients.add(recipeIngredient);
+        recipeIngredient.setIngredient(this);
+    }
+
+    public void removeRecipeIngredient(RecipeIngredient recipeIngredient) {
+        if (recipeIngredient == null) return;
+        this.recipeIngredients.remove(recipeIngredient);
+        recipeIngredient.setIngredient(null);
+    }
+
 }

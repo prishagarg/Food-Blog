@@ -5,6 +5,8 @@ package com.foodblog.backend.service.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.foodblog.backend.model.Ingredient;
 import com.foodblog.backend.model.Recipe;
@@ -51,8 +53,8 @@ public class IngredientServiceImpl implements IngredientService{
     }
 
     @Override
-    public List<Recipe> getRecipesByIngredientName(String name){
-        return recipeRepository.findByAnyIngredientMatch(List.of(name));
+    public Page<Recipe> getRecipesByIngredientName(String name, Pageable pageable) {
+        return recipeRepository.findByIngredientNameContainingIgnoreCase(name, pageable);
     }
 
     @Override

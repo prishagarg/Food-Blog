@@ -63,7 +63,7 @@ public class TagServiceImpl implements TagService {
     @Transactional(readOnly = true)
     public List<Tag> searchTagsByName(String name) {
         String normalizedName = name.toLowerCase().trim();
-        return tagRepository.findByNameContainingIgnoreCase(normalizedName);
+        return (List<Tag>) tagRepository.findByNameContainingIgnoreCase(normalizedName);
     }
 
 

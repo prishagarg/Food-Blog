@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;   
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -68,6 +70,7 @@ public class Recipe {
     private List<String> steps;
 
     @ManyToMany(mappedBy = "likedRecipes")
+    @JsonIgnore
     private Set<User> likedBy = new HashSet<>();
 
     private LocalDateTime updatedAt;
@@ -77,6 +80,26 @@ public class Recipe {
     }
 
     @ManyToMany(mappedBy = "savedRecipes")
+    @JsonIgnore
     private Set<User> savedBy = new HashSet<>();
+
+    public void addTag(Tag tag) {
+        if (tag == null) return;
+        if(this.tags.add(tag)){
+            tag.getRecipes().add(this);
+        }
+    }
+
+    public void removeTag(Tag tag) {
+        if (tag == null) return;
+        if(this.tags.remove(tag)){
+            tag.getRecipes().remove(this);
+        }
+    }
+
+
+
+
+    
 }
 
