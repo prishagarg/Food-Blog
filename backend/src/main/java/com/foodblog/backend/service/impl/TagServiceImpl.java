@@ -102,7 +102,7 @@ public class TagServiceImpl implements TagService {
             return Page.empty(pageable);
         }
         Tag tag = tagOpt.get();
-        return recipeRepository.findByTagsContaining(tag, pageable);
+        return recipeRepository.findByTagsContainingIgnoreCase(tag, pageable);
     }
 
 

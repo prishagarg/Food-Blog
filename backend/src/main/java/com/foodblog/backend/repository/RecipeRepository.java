@@ -23,10 +23,10 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     Page<Recipe> findAllByOrderByCreatedAtDesc(Pageable pageable);
     
     // Find by cuisine (paginated)
-    Page<Recipe> findByCuisine(String cuisine, Pageable pageable);
+    Page<Recipe> findByCuisineIgnoreCase(String cuisine, Pageable pageable);
     
     // Find by tag (paginated)
-    Page<Recipe> findByTagsContaining(Tag tag, Pageable pageable);
+    Page<Recipe> findByTagsContainingIgnoreCase(Tag tag, Pageable pageable);
 
     // Find recipes liked by a user (for user's liked recipes page)
     Page<Recipe> findByLikedByContaining(User user);
