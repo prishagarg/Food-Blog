@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.foodblog.backend.model.Recipe;
 import com.foodblog.backend.model.Tag;
+import com.foodblog.backend.repository.RecipeRepository;
 import com.foodblog.backend.repository.TagRepository;
 import com.foodblog.backend.service.TagService;
 
@@ -87,6 +91,20 @@ public class TagServiceImpl implements TagService {
         String normalizedName = name.toLowerCase().trim();
         return tagRepository.existsByName(normalizedName);
     }
+
+    @Autowired
+    private RecipeRepository recipeRepository;
+
+    @Override
+    public Page<Recipe> getRecipesByTag(String name, Pageable pageable) {
+        Optional<Tag> tagOpt = tagRepository.findByName(name);
+        if (tagOpt.isEmpty()) {
+            return Page.empty(pageable);
+        }
+        Tag tag = tagOpt.get();
+        return recipeRepository.findByTagsContaining(tag, pageable);
+    }
+
 
     
 }

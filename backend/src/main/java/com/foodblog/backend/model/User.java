@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +35,7 @@ public class User{
     @Email(message = "Please provide a valid email address")
     @Column(unique = true, nullable = false)
     private String email;
+    @JsonIgnore
     private String password;
     private String name;
     private String bio;

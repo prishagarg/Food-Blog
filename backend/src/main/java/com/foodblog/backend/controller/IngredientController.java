@@ -2,6 +2,8 @@ package com.foodblog.backend.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,7 +62,7 @@ public class IngredientController{
     }
 
     @GetMapping("/recipes")
-    public ResponseEntity<List<Recipe>> getRecipesByIngredientName(@RequestParam String name) {
-        return ResponseEntity.ok(ingredientService.getRecipesByIngredientName(name));
+    public ResponseEntity<Page<Recipe>> getRecipesByIngredientName(@RequestParam String name, Pageable pageable) {
+        return ResponseEntity.ok(ingredientService.getRecipesByIngredientName(name, pageable));
     }
 }

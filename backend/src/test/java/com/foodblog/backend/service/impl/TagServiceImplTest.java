@@ -1,18 +1,21 @@
 package com.foodblog.backend.service.impl;
 
-import com.foodblog.backend.model.Tag;
-import com.foodblog.backend.repository.TagRepository;
-import com.foodblog.backend.service.TagService;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import com.foodblog.backend.model.Tag;
+import com.foodblog.backend.repository.TagRepository;
 
 class TagServiceImplTest {
 
@@ -48,10 +51,10 @@ class TagServiceImplTest {
 
         when(tagRepository.findById(1L)).thenReturn(Optional.of(tag));
 
-        Tag found = tagService.getTagById(1L);
+        Optional<Tag> found = tagService.getTagById(1L);
 
         assertNotNull(found);
-        assertEquals("vegan", found.getName());
+        assertEquals("vegan", found.get().getName());
     }
 
     @Test

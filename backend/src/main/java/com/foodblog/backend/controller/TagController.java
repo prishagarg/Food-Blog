@@ -1,13 +1,25 @@
 package com.foodblog.backend.controller;
 
-import com.foodblog.backend.model.Tag;
-import com.foodblog.backend.model.Recipe;
-import com.foodblog.backend.service.TagService;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.foodblog.backend.model.Recipe;
+import com.foodblog.backend.model.Tag;
+import com.foodblog.backend.service.TagService;
 
 @RestController
 @RequestMapping("/api/tags")
@@ -35,8 +47,8 @@ public class TagController {
 
     // Get tag by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Tag> getTagById(@PathVariable Long id) {
-        Tag tag = tagService.getTagById(id);
+    public ResponseEntity<Optional<Tag>> getTagById(@PathVariable Long id) {
+        Optional<Tag> tag = tagService.getTagById(id);
         if (tag == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(tag);
     }
@@ -64,7 +76,7 @@ public class TagController {
 
     // Get recipes by tag name
     @GetMapping("/{name}/recipes")
-    public ResponseEntity<List<Recipe>> getRecipesByTag(@PathVariable String name) {
-        return ResponseEntity.ok(tagService.getRecipesByTagName(name));
+    public ResponseEntity<Page<Recipe>> getRecipesByTag(@PathVariable String name, Pageable pageable) {
+        return ResponseEntity.ok(tagService.getRecipesByTag(name, pageable));
     }
 }

@@ -11,6 +11,8 @@ import com.foodblog.backend.model.User;
 import com.foodblog.backend.repository.UserRepository;
 import com.foodblog.backend.service.UserService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User createUser(User user) {
         return userRepository.save(user);
     }

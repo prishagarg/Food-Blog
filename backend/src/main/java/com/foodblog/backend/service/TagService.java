@@ -3,6 +3,10 @@ package com.foodblog.backend.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.foodblog.backend.model.Recipe;
 import com.foodblog.backend.model.Tag;
 
 public interface TagService{
@@ -14,4 +18,5 @@ public interface TagService{
     List<Tag> searchTagsByName(String name);
     Tag findOrCreateByNormalizedName(String name);
     boolean existsByName(String name);
+    Page<Recipe> getRecipesByTag(String name, Pageable pageable);
 }
